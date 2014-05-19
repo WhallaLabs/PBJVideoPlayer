@@ -250,7 +250,7 @@ static NSString * const PBJVideoPlayerControllerPlayerKeepUpKey = @"playbackLike
 
     // load the view
     _videoView = [[PBJVideoView alloc] initWithFrame:CGRectZero];
-    _videoView.videoFillMode = AVLayerVideoGravityResizeAspect;
+    _videoView.videoFillMode = AVLayerVideoGravityResizeAspectFill;
     _videoView.playerLayer.hidden = YES;
     self.view = _videoView;
     
