@@ -259,14 +259,7 @@ static NSString * const PBJVideoPlayerControllerPlayerKeepUpKey = @"playbackLike
     [nc addObserver:self selector:@selector(_applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
     [nc addObserver:self selector:@selector(_applicationWillEnterForeground:) name:UIApplicationWillEnterForegroundNotification object:nil];
     [nc addObserver:self selector:@selector(_applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-    [super viewDidDisappear:animated];
-    
-    if (_playbackState == PBJVideoPlayerPlaybackStatePlaying)
-        [self pause];
+    [nc addObserver:self selector:@selector(_applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
 }
 
 #pragma mark - private methods
@@ -346,6 +339,9 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    if (!_touchControls)
+        return;
+    
     if (_videoPath) {
         
         switch (_playbackState) {
@@ -376,6 +372,9 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)_handleTap:(UIGestureRecognizer *)gestureRecognizer
 {
+    if (!_touchControls)
+        return;
+    
     if (_playbackState == PBJVideoPlayerPlaybackStatePlaying) {
         [self pause];
     } else if (_playbackState == PBJVideoPlayerPlaybackStateStopped) {
@@ -411,12 +410,18 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)_applicationWillEnterForeground:(NSNotification *)aNotfication
 {
+    [self playFromCurrentTime];
 }
 
 - (void)_applicationDidEnterBackground:(NSNotification *)aNotfication
 {
     if (_playbackState == PBJVideoPlayerPlaybackStatePlaying)
         [self pause];
+}
+
+- (void)_applicationDidBecomeActive:(NSNotification *)aNotification
+{
+    [self playFromCurrentTime];
 }
 
 #pragma mark - KVO
