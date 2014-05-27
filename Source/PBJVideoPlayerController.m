@@ -388,8 +388,9 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)_playerItemDidPlayToEndTime:(NSNotification *)aNotification
 {
-    [_player seekToTime:kCMTimeZero];
-    if (!_flags.playbackLoops)
+    if (_flags.playbackLoops)
+        [_player seekToTime:kCMTimeZero];
+    else
         [self stop];
 }
 
